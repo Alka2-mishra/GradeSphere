@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
   GraduationCap, LayoutDashboard, UserCircle, BookOpen,
-  Users, BarChart3, CalendarDays, Bell, LogOut, Menu, X,
+  Users, BarChart3, CalendarDays, Bell, LogOut, Menu, X, Library,
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 
@@ -10,6 +10,8 @@ const navItems = [
   { label: "Dashboard", icon: LayoutDashboard, to: "/teacher/dashboard" },
   { label: "Profile", icon: UserCircle, to: "/teacher/profile" },
   { label: "Classes", icon: BookOpen, to: "/teacher/classes" },
+  { label: "Attendance", icon: CalendarDays, to: "/teacher/attendance" },
+  { label: "Subjects", icon: Library, to: "/teacher/subjects" },
   { label: "Students", icon: Users, to: "/teacher/students" },
   { label: "Grades", icon: BarChart3, to: "/teacher/grades" },
   { label: "Schedule", icon: CalendarDays, to: "/teacher/schedule" },

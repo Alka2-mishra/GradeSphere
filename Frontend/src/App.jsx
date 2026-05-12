@@ -5,6 +5,7 @@ import StudentDashboard from "./pages/StudentDashboard";
 import TeacherDashboard from "./pages/TeacherDashboard";
 import TeacherProfile from "./pages/TeacherProfile";
 import TeacherClasses from "./pages/TeacherClasses";
+import TeacherAttendance from "./pages/TeacherAttendance";
 
 function ProtectedRoute({ role, children }) {
   const storedRole = localStorage.getItem("gs_role");
@@ -47,6 +48,14 @@ export default function App() {
           element={
             <ProtectedRoute role="teacher">
               <TeacherClasses />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/teacher/attendance"
+          element={
+            <ProtectedRoute role="teacher">
+              <TeacherAttendance />
             </ProtectedRoute>
           }
         />
