@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
   GraduationCap, LayoutDashboard, UserCircle, BookOpen,
-  Users, BarChart3, CalendarDays, Bell, LogOut, Menu, X, Library,
+  Users, BarChart3, CalendarDays, Bell, LogOut, Menu, X, Library, CalendarCheck,
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 
@@ -10,7 +10,7 @@ const navItems = [
   { label: "Dashboard", icon: LayoutDashboard, to: "/teacher/dashboard" },
   { label: "Profile", icon: UserCircle, to: "/teacher/profile" },
   { label: "Classes", icon: BookOpen, to: "/teacher/classes" },
-  { label: "Attendance", icon: CalendarDays, to: "/teacher/attendance" },
+  { label: "Attendance", icon: CalendarCheck, to: "/teacher/attendance" },
   { label: "Subjects", icon: Library, to: "/teacher/subjects" },
   { label: "Students", icon: Users, to: "/teacher/students" },
   { label: "Grades", icon: BarChart3, to: "/teacher/grades" },
@@ -96,6 +96,13 @@ export default function TeacherLayout({ children }) {
                 <p className="text-xs text-muted-foreground">Teacher</p>
               </div>
             </Link>
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-muted-foreground hover:bg-red-50 hover:text-red-600 transition-colors border"
+            >
+              <LogOut className="w-4 h-4" />
+              <span className="hidden sm:inline">Logout</span>
+            </button>
           </div>
         </header>
 
