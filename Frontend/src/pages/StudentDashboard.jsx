@@ -1,10 +1,12 @@
 import { useNavigate, Link } from "react-router-dom";
 import {
   GraduationCap, BookOpen, BarChart3, Bell, LogOut,
-  TrendingUp, Clock, CheckCircle, AlertCircle, CalendarCheck,
-  Flame, Trophy, Target, Zap, ClipboardList, FlaskConical, FileText,
+  AlertCircle, CalendarCheck,
+  Flame, Trophy, Target, ClipboardList, FlaskConical, FileText, Timer, MessageCircle,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../components/ui/card";
+import ThemeToggle from "../components/ui/theme-toggle";
+import { generateAlerts } from "../lib/alertsData";
 
 // ── Data ──────────────────────────────────────────────────────────────────────
 
@@ -29,13 +31,12 @@ const subjects = [
   { name: "Biology",            grade: "B+", marks: 85, total: 100, attendance: 82, quizAvg: 68 },
 ];
 
-const assignments = [
-  { title: "Math Problem Set 7",      subject: "Mathematics",        due: "Tomorrow",  status: "pending"  },
-  { title: "Physics Lab Report",      subject: "Physics",            due: "In 3 days", status: "pending"  },
-  { title: "CS Project Phase 2",      subject: "Computer Science",   due: "Submitted", status: "done"     },
-  { title: "English Essay Draft",     subject: "English Literature", due: "Overdue",   status: "overdue"  },
-  { title: "Chemistry Worksheet 4",   subject: "Chemistry",          due: "In 5 days", status: "pending"  },
-];
+const assignmentSummary = {
+  pending: 3,
+  submitted: 1,
+  overdue: 1,
+  total: 5,
+};
 
 const upcomingTests = [
   { title: "Mathematics Mid-Term",  subject: "Mathematics",      date: "Tomorrow",   type: "Mid-Term" },
@@ -102,7 +103,10 @@ export default function StudentDashboard() {
     navigate("/");
   }
 
-  const pendingCount = assignments.filter(a => a.status === "pending").length;
+  const pendingCount = assignmentSummary.pending;
+  const submittedCount = assignmentSummary.submitted;
+  const overdueCount = assignmentSummary.overdue;
+  const urgentAlerts = generateAlerts().filter(a => a.type === "critical" || a.type === "warning").length;
 
   const statCards = [
     {
@@ -132,7 +136,7 @@ export default function StudentDashboard() {
     {
       label: "Pending Assignments",
       value: pendingCount,
-      sub: `${assignments.filter(a => a.status === "overdue").length} overdue`,
+      sub: `${assignmentSummary.overdue} overdue`,
       icon: ClipboardList,
       bg: "bg-orange-50", color: "text-orange-600",
     },
@@ -167,10 +171,10 @@ export default function StudentDashboard() {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#f8f9fc]">
+    <div className="min-h-screen flex flex-col bg-background">
 
       {/* Navbar */}
-      <header className="sticky top-0 z-50 border-b bg-white/80 backdrop-blur-md">
+      <header className="sticky top-0 z-50 border-b bg-white/80 dark:bg-card/80 backdrop-blur-md">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
@@ -179,15 +183,32 @@ export default function StudentDashboard() {
             <span className="text-xl font-bold tracking-tight">GradeSphere</span>
           </Link>
           <div className="flex items-center gap-3">
-            <button className="relative p-2 rounded-lg hover:bg-muted transition-colors">
+            <ThemeToggle />
+            <Link to="/student/alerts" className="relative p-2 rounded-lg hover:bg-muted transition-colors">
               <Bell className="w-5 h-5" />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500" />
-            </button>
+              {urgentAlerts > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center px-1">
+                  {urgentAlerts}
+                </span>
+              )}
+            </Link>
             <Link to="/student/subjects" className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted transition-colors">
               <BookOpen className="w-4 h-4" /> Subjects
             </Link>
+            <Link to="/student/attendance" className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted transition-colors">
+              <CalendarCheck className="w-4 h-4" /> Attendance
+            </Link>
             <Link to="/student/materials" className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted transition-colors">
               <FileText className="w-4 h-4" /> Materials
+            </Link>
+            <Link to="/student/assignments" className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted transition-colors">
+              <ClipboardList className="w-4 h-4" /> Assignments
+            </Link>
+            <Link to="/student/quizzes" className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted transition-colors">
+              <Timer className="w-4 h-4" /> Quizzes
+            </Link>
+            <Link to="/student/chat" className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted transition-colors">
+              <MessageCircle className="w-4 h-4" /> Chat
             </Link>
             <Link to="/student/profile" className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-sm font-bold text-primary">
@@ -231,6 +252,23 @@ export default function StudentDashboard() {
             </div>
           </div>
         </div>
+
+        {/* ── Smart Alert Strip ── */}
+        {(() => {
+          const criticals = generateAlerts().filter(a => a.type === "critical").slice(0, 3);
+          if (criticals.length === 0) return null;
+          return (
+            <div className="space-y-2">
+              {criticals.map(alert => (
+                <div key={alert.id} className="flex items-center gap-3 px-4 py-3 rounded-xl bg-red-50 border border-red-200">
+                  <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
+                  <p className="text-sm text-red-700 font-medium flex-1 truncate">{alert.title}</p>
+                  <Link to="/student/alerts" className="text-xs font-semibold text-red-600 hover:underline shrink-0">View →</Link>
+                </div>
+              ))}
+            </div>
+          );
+        })()}
 
         {/* ── 8 Stat Cards ── */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
@@ -317,41 +355,46 @@ export default function StudentDashboard() {
 
         <div className="grid md:grid-cols-2 gap-6">
 
-          {/* ── Assignments ── */}
+          {/* ── Assignments Overview ── */}
           <Card className="border-0 shadow-sm">
             <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between gap-3">
                 <CardTitle className="flex items-center gap-2 text-base">
                   <ClipboardList className="w-5 h-5 text-primary" /> Assignments
                 </CardTitle>
-                <span className="text-xs bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full font-semibold">
-                  {pendingCount} pending
+                <span className="text-xs bg-primary/10 text-primary px-2.5 py-0.5 rounded-full font-semibold">
+                  {assignmentSummary.total} total
                 </span>
               </div>
-              <CardDescription>Upcoming & recent tasks</CardDescription>
+              <CardDescription>Open the assignments page to review, submit, and resubmit tasks.</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-2">
-              {assignments.map(({ title, subject, due, status }) => (
-                <div key={title} className="flex items-center justify-between p-3 rounded-xl border bg-muted/20 hover:bg-muted/40 transition-colors">
-                  <div className="flex items-center gap-3 min-w-0">
-                    {status === "done"
-                      ? <CheckCircle className="w-4 h-4 text-green-500 shrink-0" />
-                      : status === "overdue"
-                      ? <AlertCircle className="w-4 h-4 text-red-500 shrink-0" />
-                      : <Clock className="w-4 h-4 text-yellow-500 shrink-0" />
-                    }
-                    <div className="min-w-0">
-                      <p className="text-sm font-medium truncate">{title}</p>
-                      <p className="text-xs text-muted-foreground">{subject}</p>
-                    </div>
-                  </div>
-                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium shrink-0 ml-2 ${
-                    status === "done"    ? "bg-green-100 text-green-700" :
-                    status === "overdue" ? "bg-red-100 text-red-700"    :
-                    "bg-yellow-100 text-yellow-700"
-                  }`}>{due}</span>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-3 gap-3">
+                <div className="rounded-2xl bg-muted/20 border p-3 text-center">
+                  <p className="text-xl font-extrabold text-yellow-600">{pendingCount}</p>
+                  <p className="text-xs text-muted-foreground">Pending</p>
                 </div>
-              ))}
+                <div className="rounded-2xl bg-muted/20 border p-3 text-center">
+                  <p className="text-xl font-extrabold text-green-600">{submittedCount}</p>
+                  <p className="text-xs text-muted-foreground">Submitted</p>
+                </div>
+                <div className="rounded-2xl bg-muted/20 border p-3 text-center">
+                  <p className="text-xl font-extrabold text-red-600">{overdueCount}</p>
+                  <p className="text-xs text-muted-foreground">Overdue</p>
+                </div>
+              </div>
+              <div className="rounded-2xl bg-gradient-to-r from-primary/10 to-violet-500/10 border p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div>
+                  <p className="font-semibold">Assignment workspace</p>
+                  <p className="text-sm text-muted-foreground">Dedicated page for uploads, comments, and resubmission.</p>
+                </div>
+                <Link
+                  to="/student/assignments"
+                  className="inline-flex items-center justify-center gap-2 h-10 px-4 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary/90 transition-colors"
+                >
+                  <ClipboardList className="w-4 h-4" /> Open Assignments
+                </Link>
+              </div>
             </CardContent>
           </Card>
 
@@ -383,38 +426,45 @@ export default function StudentDashboard() {
           </Card>
         </div>
 
-        {/* ── Quiz Accuracy Breakdown ── */}
+        {/* ── Quiz Module ── */}
         <Card className="border-0 shadow-sm">
           <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between gap-3">
               <CardTitle className="flex items-center gap-2 text-base">
-                <Target className="w-5 h-5 text-primary" /> Quiz Accuracy Breakdown
+                <Timer className="w-5 h-5 text-primary" /> Quiz Module
               </CardTitle>
               <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-semibold">
-                Overall {student.quizAccuracy}%
+                Score {student.quizAccuracy}%
               </span>
             </div>
-            <CardDescription>Score per subject across recent quizzes</CardDescription>
+            <CardDescription>Timed tests, quiz history, wrong answers, and performance tracking live on the quiz page.</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {quizHistory.map(({ subject, score, total }) => {
-                const pct = Math.round((score / total) * 100);
-                return (
-                  <div key={subject} className="flex items-center gap-3 p-3 rounded-xl border bg-muted/20">
-                    <div className="relative shrink-0">
-                      <Ring pct={pct} size={44} stroke={4} color={pct >= 80 ? "#16a34a" : pct >= 65 ? "#2563eb" : "#d97706"} />
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="text-[10px] font-bold">{pct}%</span>
-                      </div>
-                    </div>
-                    <div>
-                      <p className="text-sm font-semibold">{subject}</p>
-                      <p className="text-xs text-muted-foreground">{score}/{total} correct</p>
-                    </div>
-                  </div>
-                );
-              })}
+            <div className="grid sm:grid-cols-3 gap-3 mb-4">
+              <div className="rounded-2xl bg-muted/20 border p-4">
+                <p className="text-xs text-muted-foreground">Accuracy</p>
+                <p className="text-2xl font-extrabold mt-1">{student.quizAccuracy}%</p>
+              </div>
+              <div className="rounded-2xl bg-muted/20 border p-4">
+                <p className="text-xs text-muted-foreground">Rank</p>
+                <p className="text-2xl font-extrabold mt-1">#{student.rank}</p>
+              </div>
+              <div className="rounded-2xl bg-muted/20 border p-4">
+                <p className="text-xs text-muted-foreground">Quiz history</p>
+                <p className="text-2xl font-extrabold mt-1">{quizHistory.length}</p>
+              </div>
+            </div>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-2xl bg-gradient-to-r from-primary/10 to-violet-500/10 border p-4">
+              <div>
+                <p className="font-semibold">Open the dedicated quiz workspace</p>
+                <p className="text-sm text-muted-foreground">Practice timed tests, review mistakes, and track improvements here.</p>
+              </div>
+              <Link
+                to="/student/quizzes"
+                className="inline-flex items-center justify-center gap-2 h-10 px-4 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary/90 transition-colors"
+              >
+                <Timer className="w-4 h-4" /> Open Quizzes
+              </Link>
             </div>
           </CardContent>
         </Card>
@@ -474,7 +524,7 @@ export default function StudentDashboard() {
 
       </main>
 
-      <footer className="border-t bg-white py-5 px-6 text-center text-xs text-muted-foreground">
+      <footer className="border-t bg-white dark:bg-card py-5 px-6 text-center text-xs text-muted-foreground">
         © {new Date().getFullYear()} GradeSphere. All rights reserved.
       </footer>
     </div>

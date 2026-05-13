@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { GraduationCap, BookOpen, Users, BarChart3, Star, ArrowRight, CheckCircle } from "lucide-react";
 import { Button } from "../components/ui/button";
+import ThemeToggle from "../components/ui/theme-toggle";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
 
 const features = [
@@ -27,7 +28,7 @@ export default function OnboardingPage() {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       {/* Navbar */}
-      <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur-md">
+      <header className="sticky top-0 z-50 border-b bg-background/80 dark:bg-card/80 backdrop-blur-md">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
@@ -41,6 +42,7 @@ export default function OnboardingPage() {
             <a href="#testimonials" className="hover:text-foreground transition-colors">Reviews</a>
           </nav>
           <div className="flex items-center gap-2">
+            <ThemeToggle />
             <Button variant="ghost" size="sm" onClick={() => navigate("/login?role=student")}>Sign In</Button>
             <Button size="sm" onClick={() => navigate("/login?role=student")}>Get Started</Button>
           </div>

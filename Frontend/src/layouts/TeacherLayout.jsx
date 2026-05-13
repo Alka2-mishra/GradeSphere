@@ -3,18 +3,21 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
   GraduationCap, LayoutDashboard, UserCircle, BookOpen,
   Users, BarChart3, CalendarDays, Bell, LogOut, Menu, X, Library, CalendarCheck,
+  MessageCircle,
 } from "lucide-react";
 import { Button } from "../components/ui/button";
+import ThemeToggle from "../components/ui/theme-toggle";
 
 const navItems = [
   { label: "Dashboard", icon: LayoutDashboard, to: "/teacher/dashboard" },
-  { label: "Profile", icon: UserCircle, to: "/teacher/profile" },
-  { label: "Classes", icon: BookOpen, to: "/teacher/classes" },
-  { label: "Attendance", icon: CalendarCheck, to: "/teacher/attendance" },
-  { label: "Subjects", icon: Library, to: "/teacher/subjects" },
-  { label: "Students", icon: Users, to: "/teacher/students" },
-  { label: "Grades", icon: BarChart3, to: "/teacher/grades" },
-  { label: "Schedule", icon: CalendarDays, to: "/teacher/schedule" },
+  { label: "Profile",   icon: UserCircle,      to: "/teacher/profile"   },
+  { label: "Classes",   icon: BookOpen,        to: "/teacher/classes"   },
+  { label: "Attendance",icon: CalendarCheck,   to: "/teacher/attendance"},
+  { label: "Subjects",  icon: Library,         to: "/teacher/subjects"  },
+  { label: "Students",  icon: Users,           to: "/teacher/students"  },
+  { label: "Grades",    icon: BarChart3,        to: "/teacher/grades"    },
+  { label: "Schedule",  icon: CalendarDays,    to: "/teacher/schedule"  },
+  { label: "Chat",      icon: MessageCircle,   to: "/teacher/chat"      },
 ];
 
 export default function TeacherLayout({ children }) {
@@ -28,7 +31,7 @@ export default function TeacherLayout({ children }) {
   }
 
   return (
-    <div className="min-h-screen flex bg-[#f8f9fc]">
+    <div className="min-h-screen flex bg-background">
       {/* Sidebar */}
       <aside
         className={`fixed inset-y-0 left-0 z-40 w-60 bg-white border-r flex flex-col transition-transform duration-200
@@ -78,15 +81,18 @@ export default function TeacherLayout({ children }) {
       )}
 
       <div className="flex-1 flex flex-col min-w-0">
-        <header className="sticky top-0 z-20 h-16 bg-white/80 backdrop-blur-md border-b flex items-center justify-between px-6 shrink-0">
+        <header className="sticky top-0 z-20 h-16 bg-white/80 dark:bg-card/80 backdrop-blur-md border-b flex items-center justify-between px-6 shrink-0">
           <button className="lg:hidden p-1 rounded-md hover:bg-muted" onClick={() => setSidebarOpen((v) => !v)}>
             {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
           <div className="flex items-center gap-3 ml-auto">
-            <Button variant="ghost" size="icon" className="relative">
-              <Bell className="w-5 h-5" />
+            <ThemeToggle />
+            <div className="relative">
+              <Button variant="ghost" size="icon" className="relative">
+                <Bell className="w-5 h-5" />
+              </Button>
               <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500" />
-            </Button>
+            </div>
             <Link to="/teacher/profile" className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-sm font-bold text-primary">
                 P
@@ -108,7 +114,7 @@ export default function TeacherLayout({ children }) {
 
         <main className="flex-1 p-6 overflow-y-auto">{children}</main>
 
-        <footer className="border-t bg-white py-4 px-6 text-center text-xs text-muted-foreground">
+        <footer className="border-t bg-white dark:bg-card py-4 px-6 text-center text-xs text-muted-foreground">
           © {new Date().getFullYear()} GradeSphere. All rights reserved.
         </footer>
       </div>

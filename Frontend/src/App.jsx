@@ -10,6 +10,12 @@ import TeacherSchedule from "./pages/TeacherSchedule";
 import StudentProfile from "./pages/StudentProfile";
 import StudentSubjects from "./pages/StudentSubjects";
 import StudentMaterials from "./pages/StudentMaterials";
+import StudentAttendance from "./pages/StudentAttendance";
+import StudentAlerts from "./pages/StudentAlerts";
+import StudentAssignments from "./pages/StudentAssignments";
+import StudentQuizzes from "./pages/StudentQuizzes";
+import StudentChat from "./pages/StudentChat";
+import TeacherChat from "./pages/TeacherChat";
 
 function ProtectedRoute({ role, children }) {
   const storedRole = localStorage.getItem("gs_role");
@@ -92,6 +98,54 @@ export default function App() {
           element={
             <ProtectedRoute role="student">
               <StudentMaterials />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/student/assignments"
+          element={
+            <ProtectedRoute role="student">
+              <StudentAssignments />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/student/quizzes"
+          element={
+            <ProtectedRoute role="student">
+              <StudentQuizzes />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/student/attendance"
+          element={
+            <ProtectedRoute role="student">
+              <StudentAttendance />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/student/alerts"
+          element={
+            <ProtectedRoute role="student">
+              <StudentAlerts />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/student/chat"
+          element={
+            <ProtectedRoute role="student">
+              <StudentChat />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/teacher/chat"
+          element={
+            <ProtectedRoute role="teacher">
+              <TeacherChat />
             </ProtectedRoute>
           }
         />

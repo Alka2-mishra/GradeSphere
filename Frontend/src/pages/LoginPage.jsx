@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { GraduationCap, BookOpen, Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
+import ThemeToggle from "../components/ui/theme-toggle";
 
 export default function LoginPage() {
   const [searchParams] = useSearchParams();
@@ -46,7 +47,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       {/* Navbar */}
-      <header className="border-b bg-background/80 backdrop-blur-md">
+      <header className="border-b bg-background/80 dark:bg-card/80 backdrop-blur-md">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
@@ -54,11 +55,14 @@ export default function LoginPage() {
             </div>
             <span className="text-xl font-bold tracking-tight">GradeSphere</span>
           </Link>
-          <Link to="/">
-            <Button variant="ghost" size="sm">
-              <ArrowLeft className="w-4 h-4 mr-1" /> Back
-            </Button>
-          </Link>
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <Link to="/">
+              <Button variant="ghost" size="sm">
+                <ArrowLeft className="w-4 h-4 mr-1" /> Back
+              </Button>
+            </Link>
+          </div>
         </div>
       </header>
 

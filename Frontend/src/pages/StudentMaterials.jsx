@@ -4,9 +4,10 @@ import {
   GraduationCap, Bell, LogOut, BookOpen, Search, X,
   FileText, Presentation, Video, StickyNote, Link2,
   PlayCircle, Download, ExternalLink, Clock, User,
-  ChevronRight, Filter,
+  ChevronRight, Filter, BarChart3, CalendarCheck, Timer, MessageCircle,
 } from "lucide-react";
 import { Card, CardContent } from "../components/ui/card";
+import ThemeToggle from "../components/ui/theme-toggle";
 import { cn } from "../lib/utils";
 
 // ── Types config ──────────────────────────────────────────────────────────────
@@ -89,21 +90,34 @@ function TypeBadge({ type }) {
 
 function StudentNav({ onLogout }) {
   return (
-    <header className="sticky top-0 z-50 border-b bg-white/80 backdrop-blur-md">
+    <header className="sticky top-0 z-50 border-b bg-white/80 dark:bg-card/80 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2">
+        <Link to="/student/dashboard" className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
             <GraduationCap className="w-5 h-5 text-primary-foreground" />
           </div>
           <span className="text-xl font-bold tracking-tight">GradeSphere</span>
         </Link>
         <div className="flex items-center gap-3">
+          <ThemeToggle />
           <button className="relative p-2 rounded-lg hover:bg-muted transition-colors">
             <Bell className="w-5 h-5" />
             <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500" />
           </button>
+          <Link to="/student/dashboard" className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted transition-colors">
+            <BarChart3 className="w-4 h-4" /> Dashboard
+          </Link>
           <Link to="/student/subjects" className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted transition-colors">
             <BookOpen className="w-4 h-4" /> Subjects
+          </Link>
+          <Link to="/student/attendance" className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted transition-colors">
+            <CalendarCheck className="w-4 h-4" /> Attendance
+          </Link>
+          <Link to="/student/quizzes" className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted transition-colors">
+            <Timer className="w-4 h-4" /> Quizzes
+          </Link>
+          <Link to="/student/chat" className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted transition-colors">
+            <MessageCircle className="w-4 h-4" /> Chat
           </Link>
           <Link to="/student/profile" className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-sm font-bold text-primary">A</div>
@@ -233,7 +247,7 @@ export default function StudentMaterials() {
     : MATERIALS.filter(m => m.subject === subId).length;
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#f8f9fc]">
+    <div className="min-h-screen flex flex-col bg-background">
       <StudentNav onLogout={handleLogout} />
 
       <div className="flex-1 flex max-w-7xl mx-auto w-full px-6 py-8 gap-6">
@@ -379,7 +393,7 @@ export default function StudentMaterials() {
         </div>
       </div>
 
-      <footer className="border-t bg-white py-5 px-6 text-center text-xs text-muted-foreground">
+      <footer className="border-t bg-white dark:bg-card py-5 px-6 text-center text-xs text-muted-foreground">
         © {new Date().getFullYear()} GradeSphere. All rights reserved.
       </footer>
 

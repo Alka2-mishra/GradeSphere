@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { Button } from "../components/ui/button";
+import ThemeToggle from "../components/ui/theme-toggle";
 
 // ── Initial Data ──────────────────────────────────────────────────────────────
 
@@ -76,7 +77,7 @@ function Modal({ title, onClose, children }) {
 
 function StudentNav({ name, onLogout }) {
   return (
-    <header className="sticky top-0 z-50 border-b bg-white/80 backdrop-blur-md">
+    <header className="sticky top-0 z-50 border-b bg-white/80 dark:bg-card/80 backdrop-blur-md">
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
@@ -85,6 +86,7 @@ function StudentNav({ name, onLogout }) {
           <span className="text-xl font-bold tracking-tight">GradeSphere</span>
         </Link>
         <div className="flex items-center gap-3">
+          <ThemeToggle />
           <button className="relative p-2 rounded-lg hover:bg-muted transition-colors">
             <Bell className="w-5 h-5" />
             <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500" />
@@ -167,7 +169,7 @@ export default function StudentProfile() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#f8f9fc]">
+    <div className="min-h-screen flex flex-col bg-background">
       <StudentNav name={profile.name} onLogout={handleLogout} />
 
       <main className="flex-1 max-w-5xl mx-auto w-full px-6 py-8 space-y-6">
@@ -287,7 +289,7 @@ export default function StudentProfile() {
         </div>
       </main>
 
-      <footer className="border-t bg-white py-5 px-6 text-center text-xs text-muted-foreground">
+      <footer className="border-t bg-white dark:bg-card py-5 px-6 text-center text-xs text-muted-foreground">
         © {new Date().getFullYear()} GradeSphere. All rights reserved.
       </footer>
 
